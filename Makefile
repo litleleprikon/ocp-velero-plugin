@@ -44,9 +44,11 @@ _output/$(BIN): $(BIN)/*.go
 				 -v $$(pwd)/_output:/go/src/$(REPO)/_output \
 				 -v $$(pwd)/.go/std/$(ARCH):/usr/local/go/pkg/linux_$(ARCH)_static \
 				 -e CGO_ENABLED=0 \
+				 -e GO111MODULE=on \
 				 -w /go/src/$(REPO) \
 				 $(BUILD_IMAGE) \
-				 go build -installsuffix "static"  -tags "$(BUILDTAGS)" -i -v -o _output/$(BIN) ./$(BIN)
+				 go mod download && \
+				 go build -installsuffix "static" -tags "$(BUILDTAGS)" -i -v -o _output/$(BIN) ./$(BIN)
 
 container: all
 	cp Dockerfile _output/Dockerfile
